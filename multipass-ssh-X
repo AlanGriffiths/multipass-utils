@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+multipass start "$1"
+host_ip=$(multipass info "$1" --format csv | awk -F, '/^'"$1"'/ { print $3 }')
+ssh -X "ubuntu@${host_ip}" "${@:2}"

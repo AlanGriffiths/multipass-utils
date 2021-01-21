@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+multipass stop "$1"
+sudo qemu-img resize "/var/snap/multipass/common/data/multipassd/vault/instances/$1/"*.img +5G
