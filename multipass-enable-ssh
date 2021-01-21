@@ -1,4 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 multipass start "$1"
-multipass exec "$1" -- bash -c "echo $(cat ~/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys"
+while read -r key
+do multipass exec "$1" -- bash -c "echo $key >> ~/.ssh/authorized_keys"
+done < ~/.ssh/id_rsa.pub
