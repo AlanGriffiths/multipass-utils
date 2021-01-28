@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eu
+
+multipass_vms=$(multipass list | grep -v ^Name | cut -d\  -f1)
+
+for vm in ${multipass_vms}
+do
+  multipass info "$vm" | grep -v "\--"
+
+  echo ""
+  echo "Do you wish to purge this VM?"
+  select del in "Purge" "Keep"; do
+    case $del in
+        Purge ) multipass delete --purge "$vm"; break;;
+	Keep ) break;;
+    esac
+  done
+  echo ""
+done  
