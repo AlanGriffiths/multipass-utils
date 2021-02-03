@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+multipass stop --all
+snap stop multipass.multipassd
+sudoedit /var/snap/multipass/common/data/multipassd/multipassd-vm-instances.json
+snap start multipass.multipassd
