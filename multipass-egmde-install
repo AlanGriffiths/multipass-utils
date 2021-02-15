@@ -2,5 +2,5 @@
 set -euo pipefail
 multipass start "$1"
 multipass exec "$1" -- sudo apt update
-multipass exec "$1" -- sudo apt install --assume-yes xwayland fonts-freefont-ttf gnome-terminal
+multipass exec "$1" -- sudo apt install --assume-yes xfce4-terminal
 multipass exec "$1" -- sudo snap install --classic --edge egmde
