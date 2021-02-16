@@ -4,3 +4,5 @@ multipass start "$1"
 multipass exec "$1" -- sudo apt update
 multipass exec "$1" -- sudo apt install --assume-yes xfce4-terminal
 multipass exec "$1" -- sudo snap install --classic --edge egmde
+multipass exec "$1" -- sh -c "if ! grep -q no-of-workspaces= ~/.config/egmde.config; then echo no-of-workspaces=4 >> .config/egmde.config; fi"
+multipass exec "$1" -- sh -c "if ! grep -q enable-autostart= ~/.config/egmde.config; then echo enable-autostart=  >> .config/egmde.config; fi"
