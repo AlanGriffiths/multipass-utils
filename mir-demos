@@ -1,0 +1,45 @@
+#!/bin/bash
+set -euo pipefail
+
+vm_name="${1:-mir-demos}"
+
+until command -v multipass > /dev/null
+do
+  echo "Multipass is not installed, do you wish to install it?"
+  select install in "Yes" "No"; do
+    case $install in
+        Yes ) sudo snap install multipass; break;;
+	No ) break;;
+    esac
+  done
+done
+
+if ! multipass start "${vm_name}"
+then
+  set -x
+  multipass launch -n "${vm_name}"
+  multipass exec "${vm_name}" -- sudo apt-add-repository --yes --update ppa:mir-team/release
+  multipass exec "${vm_name}" -- sudo apt install --assume-yes mir-graphics-drivers-desktop mir-demos mir-test-tools
+  multipass exec "${vm_name}" -- sudo apt install --assume-yes fonts-freefont-ttf xfce4-terminal epiphany-browser
+  multipass exec "${vm_name}" -- sudo snap install --classic --candidate egmde
+  multipass exec "${vm_name}" -- sudo snap install --edge egmde-confined-desktop
+  multipass exec "${vm_name}" -- egmde-confined-desktop --help > /dev/null || true
+  multipass exec "${vm_name}" -- sh -c "mkdir --parents ~/.config"
+  multipass exec "${vm_name}" -- sh -c "if ! grep -q no-of-workspaces= ~/.config/egmde.config; then echo no-of-workspaces=4 >> .config/egmde.config; fi"
+  multipass exec "${vm_name}" -- sh -c "if ! grep -q enable-autostart= ~/.config/egmde.config; then echo enable-autostart=  >> .config/egmde.config; fi"
+  multipass exec "${vm_name}" -- bash -c "echo $(cat ~/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys"
+  set +x
+fi
+
+host_ip=$(multipass info "${vm_name}" --format csv | awk -F, '/^'"${vm_name}"'/ { print $3 }')
+
+while :
+do
+  echo "Choose the Mir server you'd like to try (\"0\" to exit):"
+  select demo in "egmde" "miral-app" "miral-app -kiosk" "miral-app -demo-server" "miral-app --window-manager tiling" "cp --force .Xauthority snap/egmde-confined-desktop/current/&&egmde-confined-desktop"
+  do
+    if [ "$demo" = "" ]; then exit 0; fi
+    ssh -X "ubuntu@${host_ip}" sh -lc "\"$demo\""
+    break
+  done
+done
