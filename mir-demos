@@ -22,6 +22,7 @@ then
   multipass exec "${vm_name}" -- sudo apt install --assume-yes mir-graphics-drivers-desktop mir-demos mir-test-tools
   multipass exec "${vm_name}" -- sudo apt install --assume-yes fonts-freefont-ttf xfce4-terminal epiphany-browser
   multipass exec "${vm_name}" -- sudo snap install --classic --candidate egmde
+  multipass exec "${vm_name}" -- sudo snap install mircade 
   multipass exec "${vm_name}" -- sudo snap install --edge egmde-confined-desktop
   multipass exec "${vm_name}" -- egmde-confined-desktop --help > /dev/null || true
   multipass exec "${vm_name}" -- sh -c "mkdir --parents ~/.config"
@@ -36,7 +37,13 @@ host_ip=$(multipass info "${vm_name}" --format csv | awk -F, '/^'"${vm_name}"'/ 
 while :
 do
   echo "Choose the Mir server you'd like to try (\"0\" to exit):"
-  select demo in "egmde" "miral-app" "miral-app -kiosk" "miral-app -demo-server" "miral-app --window-manager tiling" "cp --force .Xauthority snap/egmde-confined-desktop/current/&&egmde-confined-desktop"
+  select demo in "egmde"\
+	         "miral-app"\
+		 "miral-app -kiosk"\
+		 "miral-app -kiosk -terminal mircade"\
+		 "miral-app -demo-server"\
+                 "miral-app --window-manager tiling"\
+                 "cp --force .Xauthority snap/egmde-confined-desktop/current/&&egmde-confined-desktop"
   do
     if [ "$demo" = "" ]; then exit 0; fi
     ssh -X "ubuntu@${host_ip}" sh -lc "\"$demo\""
