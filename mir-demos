@@ -40,9 +40,9 @@ do
   select demo in "egmde"\
 	         "miral-app"\
 		 "miral-app -kiosk"\
-		 "miral-app -kiosk -terminal mircade"\
 		 "miral-app -demo-server"\
                  "miral-app --window-manager tiling"\
+                 "cp --force .Xauthority snap/mircade/current/&&mircade"\
                  "cp --force .Xauthority snap/egmde-confined-desktop/current/&&egmde-confined-desktop"
   do
     if [ "$demo" = "" ]; then exit 0; fi
