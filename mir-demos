@@ -24,11 +24,12 @@ then
   multipass exec "${vm_name}" -- sudo snap install --classic --candidate egmde
   multipass exec "${vm_name}" -- sudo snap install mircade 
   multipass exec "${vm_name}" -- sudo snap install --edge egmde-confined-desktop
+  multipass exec "${vm_name}" -- mircade --help > /dev/null || true
   multipass exec "${vm_name}" -- egmde-confined-desktop --help > /dev/null || true
   multipass exec "${vm_name}" -- sh -c "mkdir --parents ~/.config"
   multipass exec "${vm_name}" -- sh -c "if ! grep -q no-of-workspaces= ~/.config/egmde.config; then echo no-of-workspaces=4 >> .config/egmde.config; fi"
   multipass exec "${vm_name}" -- sh -c "if ! grep -q enable-autostart= ~/.config/egmde.config; then echo enable-autostart=  >> .config/egmde.config; fi"
-  multipass exec "${vm_name}" -- bash -c "echo $(cat ~/.ssh/id_rsa.pub) >> ~/.ssh/authorized_keys"
+  multipass exec "${vm_name}" -- bash -c "echo \"$(cat ~/.ssh/id_rsa.pub)\" >> ~/.ssh/authorized_keys"
   set +x
 fi
 
