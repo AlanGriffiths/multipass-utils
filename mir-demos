@@ -17,19 +17,32 @@ done
 if ! multipass start "${vm_name}"
 then
   set -x
-  multipass launch -n "${vm_name}"
-  multipass exec "${vm_name}" -- sudo apt-add-repository --yes --update ppa:mir-team/release
-  multipass exec "${vm_name}" -- sudo apt install --assume-yes mir-graphics-drivers-desktop mir-demos mir-test-tools
-  multipass exec "${vm_name}" -- sudo apt install --assume-yes fonts-freefont-ttf xfce4-terminal epiphany-browser
-  multipass exec "${vm_name}" -- sudo snap install --classic --candidate egmde
-  multipass exec "${vm_name}" -- sudo snap install mircade 
-  multipass exec "${vm_name}" -- sudo snap install --edge egmde-confined-desktop
+  multipass launch -v -n "${vm_name}" --cloud-init - <<EOF
+apt:
+  preserve_sources_list: true
+  sources:
+      mir-team:
+          source: 'ppa:mir-team/release'
+ssh_authorized_keys:
+    - $(cat ~/.ssh/id_rsa.pub)
+packages:
+    - xwayland
+    - fonts-freefont-ttf
+    - xfce4-terminal
+    - epiphany-browser
+    - mir-graphics-drivers-desktop
+    - mir-demos
+    - mir-test-tools
+runcmd:
+    - sudo snap install --classic --candidate egmde
+    - sudo snap install mircade
+    - sudo snap install --edge egmde-confined-desktop
+EOF
   multipass exec "${vm_name}" -- mircade --help > /dev/null || true
   multipass exec "${vm_name}" -- egmde-confined-desktop --help > /dev/null || true
   multipass exec "${vm_name}" -- sh -c "mkdir --parents ~/.config"
   multipass exec "${vm_name}" -- sh -c "if ! grep -q no-of-workspaces= ~/.config/egmde.config; then echo no-of-workspaces=4 >> .config/egmde.config; fi"
   multipass exec "${vm_name}" -- sh -c "if ! grep -q enable-autostart= ~/.config/egmde.config; then echo enable-autostart=  >> .config/egmde.config; fi"
-  multipass exec "${vm_name}" -- bash -c "echo \"$(cat ~/.ssh/id_rsa.pub)\" >> ~/.ssh/authorized_keys"
   set +x
 fi
 
