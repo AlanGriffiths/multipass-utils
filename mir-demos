@@ -33,10 +33,11 @@ packages:
     - mir-graphics-drivers-desktop
     - mir-demos
     - mir-test-tools
-runcmd:
-    - sudo snap install --classic --candidate egmde
-    - sudo snap install mircade
-    - sudo snap install --edge egmde-confined-desktop
+snap:
+    commands:
+        - snap install --classic --candidate egmde
+        - snap install mircade
+        - snap install --edge egmde-confined-desktop
 EOF
   multipass exec "${vm_name}" -- mircade --help > /dev/null || true
   multipass exec "${vm_name}" -- egmde-confined-desktop --help > /dev/null || true
