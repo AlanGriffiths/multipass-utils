@@ -27,7 +27,7 @@ packages:
     - xfce4-goodies
     - xfdesktop4-data
 runcmd:
-    - sudo snap install --classic --channel=edge/pr54 egmde
+    - sudo snap install --classic --channel=edge egmde
 EOF
   multipass exec "${vm_name}" -- sh -c "mkdir --parents ~/.config"
   multipass exec "${vm_name}" -- sh -c "if ! grep -q no-of-workspaces= ~/.config/egmde.config; then echo no-of-workspaces=4 >> .config/egmde.config; fi"
