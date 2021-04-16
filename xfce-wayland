@@ -1,0 +1,40 @@
+#!/bin/bash
+set -euo pipefail
+
+vm_name="${1:-$(basename "$0")}"
+
+until command -v multipass > /dev/null
+do
+  echo "Multipass is not installed, do you wish to install it?"
+  select install in "Yes" "No"; do
+    case $install in
+        Yes ) sudo snap install multipass; break;;
+	No ) break;;
+    esac
+  done
+done
+
+if ! multipass start "${vm_name}"
+then
+  set -x
+  multipass launch -v -n "${vm_name}" --cloud-init - <<EOF
+ssh_authorized_keys:
+    - $(cat ~/.ssh/id_rsa.pub)
+packages:
+    - fonts-freefont-ttf
+    - fonts-font-awesome
+    - xfce4-terminal
+    - xfce4-goodies
+    - xfdesktop4-data
+runcmd:
+    - sudo snap install --classic --channel=edge/pr54 egmde
+EOF
+  multipass exec "${vm_name}" -- sh -c "mkdir --parents ~/.config"
+  multipass exec "${vm_name}" -- sh -c "if ! grep -q no-of-workspaces= ~/.config/egmde.config; then echo no-of-workspaces=4 >> .config/egmde.config; fi"
+  multipass exec "${vm_name}" -- sh -c "if ! grep -q enable-autostart= ~/.config/egmde.config; then echo enable-autostart=  >> .config/egmde.config; fi"
+  multipass exec "${vm_name}" -- sh -c "if ! grep -q swaybg.image= ~/.config/egmde.config; then echo swaybg.image=/usr/share/backgrounds/xfce/xfce-stripes.png  >> .config/egmde.config; fi"
+  set +x
+fi
+
+host_ip=$(multipass info "${vm_name}" --format csv | awk -F, '/^'"${vm_name}"'/ { print $3 }')
+exec ssh -XC "ubuntu@${host_ip}" sh -lc egmde
