@@ -23,6 +23,9 @@ ssh_authorized_keys:
 packages:
     - fonts-freefont-ttf
     - fonts-font-awesome
+    - xfce4-panel
+    - xfwm4
+    - xfdesktop4
     - xfce4-terminal
     - xfce4-goodies
     - xfdesktop4-data
