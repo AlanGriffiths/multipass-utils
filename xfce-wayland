@@ -17,7 +17,7 @@ done
 if ! multipass start "${vm_name}"
 then
   set -x
-  multipass launch -v -n "${vm_name}" --cloud-init - <<EOF
+  multipass launch -v -n "${vm_name}" --cloud-init - daily:hirsute <<EOF
 ssh_authorized_keys:
     - $(cat ~/.ssh/id_rsa.pub)
 packages:
