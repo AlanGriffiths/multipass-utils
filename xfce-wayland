@@ -34,7 +34,7 @@ runcmd:
 EOF
   multipass exec "${vm_name}" -- sh -c "mkdir --parents ~/.config"
   multipass exec "${vm_name}" -- sh -c "if ! grep -q no-of-workspaces= ~/.config/egmde.config; then echo no-of-workspaces=4 >> .config/egmde.config; fi"
-  multipass exec "${vm_name}" -- sh -c "if ! grep -q enable-autostart= ~/.config/egmde.config; then echo enable-autostart=  >> .config/egmde.config; fi"
+  multipass exec "${vm_name}" -- sh -c "if ! grep -q shell-enable-autostart= ~/.config/egmde.config; then echo shell-enable-autostart=  >> .config/egmde.config; fi"
   multipass exec "${vm_name}" -- sh -c "if ! grep -q swaybg.image= ~/.config/egmde.config; then echo swaybg.image=/usr/share/backgrounds/xfce/xfce-stripes.png  >> .config/egmde.config; fi"
   set +x
 fi
