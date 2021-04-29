@@ -28,13 +28,14 @@ ssh_authorized_keys:
 packages:
     - xwayland
     - fonts-freefont-ttf
+    - fonts-font-awesome
     - xfce4-terminal
     - epiphany-browser
     - mir-graphics-drivers-desktop
     - mir-demos
     - mir-test-tools
 runcmd:
-    - sudo snap install --classic --candidate egmde
+    - sudo snap install --classic --edge egmde
     - sudo snap install mircade
     - sudo snap install --edge egmde-confined-desktop
 EOF
