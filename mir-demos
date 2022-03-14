@@ -38,6 +38,7 @@ runcmd:
     - sudo snap install --classic --edge egmde
     - sudo snap install mircade
     - sudo snap install --edge egmde-confined-desktop
+    - sudo snap install --edge mate-wayland
 EOF
   multipass exec "${vm_name}" -- mircade --help > /dev/null || true
   multipass exec "${vm_name}" -- egmde-confined-desktop --help > /dev/null || true
@@ -53,12 +54,13 @@ while :
 do
   echo "Choose the Mir server you'd like to try (\"0\" to exit):"
   select demo in "egmde"\
-	         "miral-app"\
-		 "miral-app -kiosk"\
-		 "miral-app -demo-server"\
+                 "miral-app"\
+                 "miral-app -kiosk"\
+                 "miral-app -demo-server"\
                  "miral-app --window-manager tiling"\
                  "cp --force .Xauthority snap/mircade/current/&&mircade"\
-                 "cp --force .Xauthority snap/egmde-confined-desktop/current/&&egmde-confined-desktop"
+                 "cp --force .Xauthority snap/egmde-confined-desktop/current/&&egmde-confined-desktop"\
+                 "dbus-run-session mate-wayland"
   do
     if [ "$demo" = "" ]; then exit 0; fi
     ssh -X "ubuntu@${host_ip}" sh -lc "\"$demo\""
